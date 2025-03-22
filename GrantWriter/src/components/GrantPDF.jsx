@@ -46,19 +46,23 @@ export const generatePDF = (grantData) => {
       }
     };
 
-    // Add Header
+    // Add Header with title wrapping
     doc.setFontSize(24);
     doc.setTextColor(255, 107, 0); // #FF6B00
-    doc.text(grantData.title, 20, 20);
+    const titleLines = doc.splitTextToSize(grantData.title, 170); // Wrap at 170 width
+    doc.text(titleLines, 20, 20);
+    
+    // Calculate new Y position based on number of title lines
+    let headerY = 20 + (titleLines.length * 10); // Add 10 points per line
 
-    // Add Organization Info
+    // Add Organization Info with adjusted spacing
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text(`Organization: ${grantData.organization}`, 20, 35);
-    doc.text(`Amount: ${grantData.amount}`, 20, 42);
-    doc.text(`Deadline: ${grantData.deadline}`, 20, 49);
+    doc.text(`Organization: ${grantData.organization}`, 20, headerY + 15);
+    doc.text(`Amount: ${grantData.amount}`, 20, headerY + 22);
+    doc.text(`Deadline: ${grantData.deadline}`, 20, headerY + 29);
 
-    let currentY = 60;
+    let currentY = headerY + 40; // Adjust starting position for content
 
     // Add Executive Summary
     doc.setFontSize(16);
