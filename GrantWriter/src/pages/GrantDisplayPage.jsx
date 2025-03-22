@@ -268,9 +268,9 @@ const GrantDisplayPage = () => {
   );
 
   const renderTimeline = () => (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-        <FiClock className="mr-2 text-blue-600" />
+    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+        <FiClock className="mr-2 text-[#FF6B00]" />
         Project Timeline
       </h2>
       {isEditing ? (
@@ -287,7 +287,7 @@ const GrantDisplayPage = () => {
                   newTimeline[e.target.value] = description;
                   setGrantData({ ...grantData, timeline: newTimeline });
                 }}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium"
+                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent font-medium bg-white shadow-sm hover:shadow-md transition-all duration-300"
               />
               <textarea
                 value={description}
@@ -296,7 +296,7 @@ const GrantDisplayPage = () => {
                   newTimeline[phase] = e.target.value;
                   setGrantData({ ...grantData, timeline: newTimeline });
                 }}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
                 rows="3"
               />
             </div>
@@ -305,9 +305,9 @@ const GrantDisplayPage = () => {
       ) : (
         <div className="space-y-6">
           {Object.entries(grantData.timeline).map(([phase, description], index) => (
-            <div key={index} className="border-l-4 border-blue-500 pl-4">
-              <h3 className="font-semibold text-gray-800 mb-2">{phase}</h3>
-              <p className="text-gray-600">{description}</p>
+            <div key={index} className="border-l-4 border-[#FF6B00] pl-4 hover:bg-orange-50 rounded-r-lg transition-all duration-300 p-3">
+              <h3 className="font-semibold text-gray-900 mb-2">{phase}</h3>
+              <p className="text-gray-700">{description}</p>
             </div>
           ))}
         </div>
@@ -316,15 +316,15 @@ const GrantDisplayPage = () => {
   );
 
   const renderRisks = () => (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-        <FiTarget className="mr-2 text-red-600" />
+    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+        <FiTarget className="mr-2 text-[#FF6B00]" />
         Risks and Mitigation Strategies
       </h2>
       {isEditing ? (
         <div className="space-y-6">
           {grantData.risks.map((riskItem, index) => (
-            <div key={index} className="space-y-2">
+            <div key={index} className="space-y-2 bg-gray-50 p-4 rounded-lg">
               <input
                 type="text"
                 value={riskItem.risk || ''}
@@ -337,7 +337,7 @@ const GrantDisplayPage = () => {
                   setGrantData({ ...grantData, risks: newRisks });
                 }}
                 placeholder="Risk"
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
               />
               <textarea
                 value={riskItem.mitigation || ''}
@@ -350,7 +350,7 @@ const GrantDisplayPage = () => {
                   setGrantData({ ...grantData, risks: newRisks });
                 }}
                 placeholder="Mitigation Strategy"
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
                 rows="2"
               />
             </div>
@@ -362,7 +362,7 @@ const GrantDisplayPage = () => {
                 risks: [...grantData.risks, { risk: '', mitigation: '' }]
               });
             }}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="mt-4 px-4 py-2 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white rounded-lg hover:from-[#FF8533] hover:to-[#FFA366] transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
           >
             Add Risk
           </button>
@@ -370,12 +370,12 @@ const GrantDisplayPage = () => {
       ) : (
         <div className="space-y-6">
           {grantData.risks.map((riskItem, index) => (
-            <div key={index} className="border-l-4 border-red-500 pl-4">
+            <div key={index} className="border-l-4 border-[#FF6B00] pl-4 hover:bg-orange-50 rounded-r-lg transition-all duration-300 p-3">
               <div className="flex items-start space-x-3">
-                <FiCheckCircle className="text-red-500 mt-1" />
+                <FiCheckCircle className="text-[#FF6B00] mt-1" />
                 <div>
-                  <h3 className="font-semibold text-gray-800">{riskItem.risk}</h3>
-                  <p className="text-gray-600 mt-1">{riskItem.mitigation}</p>
+                  <h3 className="font-semibold text-gray-900">{riskItem.risk}</h3>
+                  <p className="text-gray-700 mt-1">{riskItem.mitigation}</p>
                 </div>
               </div>
             </div>
@@ -390,20 +390,20 @@ const GrantDisplayPage = () => {
       {/* Header Section */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-bold text-gray-900">{grantData.title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">{grantData.title}</h1>
           <div className="flex space-x-4">
             {!isEditing ? (
               <>
                 <button
                   onClick={handleEdit}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white rounded-lg hover:from-[#FF8533] hover:to-[#FFA366] transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <FiEdit2 className="mr-2" />
                   Edit
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <FiDownload className="mr-2" />
                   Download PDF
@@ -413,14 +413,14 @@ const GrantDisplayPage = () => {
               <>
                 <button
                   onClick={handleSave}
-                  className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white rounded-lg hover:from-[#FF8533] hover:to-[#FFA366] transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <FiSave className="mr-2" />
                   Save
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <FiX className="mr-2" />
                   Cancel
@@ -431,25 +431,25 @@ const GrantDisplayPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-            <FiUsers className="text-2xl text-blue-600" />
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <FiUsers className="text-2xl text-[#FF6B00]" />
             <div>
-              <p className="text-sm text-gray-600">Organization</p>
-              <p className="font-semibold">{grantData.organization}</p>
+              <p className="text-sm text-gray-600 font-medium">Organization</p>
+              <p className="font-semibold text-gray-900">{grantData.organization}</p>
             </div>
           </div>
-          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-            <FiDollarSign className="text-2xl text-green-600" />
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <FiDollarSign className="text-2xl text-[#FF6B00]" />
             <div>
-              <p className="text-sm text-gray-600">Amount</p>
-              <p className="font-semibold">{grantData.amount}</p>
+              <p className="text-sm text-gray-600 font-medium">Amount</p>
+              <p className="font-semibold text-gray-900">{grantData.amount}</p>
             </div>
           </div>
-          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-            <FiCalendar className="text-2xl text-orange-600" />
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <FiCalendar className="text-2xl text-[#FF6B00]" />
             <div>
-              <p className="text-sm text-gray-600">Deadline</p>
-              <p className="font-semibold">{grantData.deadline}</p>
+              <p className="text-sm text-gray-600 font-medium">Deadline</p>
+              <p className="font-semibold text-gray-900">{grantData.deadline}</p>
             </div>
           </div>
         </div>
@@ -458,13 +458,20 @@ const GrantDisplayPage = () => {
       {/* Main Content */}
       <div className="space-y-8">
         {/* Executive Summary */}
-        {renderEditableField(
-          "Executive Summary",
-          grantData.executiveSummary,
-          (e) => setGrantData({ ...grantData, executiveSummary: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            Executive Summary
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.executiveSummary}
+              onChange={(e) => setGrantData({ ...grantData, executiveSummary: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">{grantData.executiveSummary}</p>
+          )}
+        </div>
 
         {/* Project Description */}
         {renderEditableField(
@@ -476,9 +483,9 @@ const GrantDisplayPage = () => {
         )}
 
         {/* Objectives */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <FiTarget className="mr-2 text-blue-600" />
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiTarget className="mr-2 text-[#FF6B00]" />
             Project Objectives
           </h2>
           {isEditing ? (
@@ -493,16 +500,16 @@ const GrantDisplayPage = () => {
                     newObjectives[index] = e.target.value;
                     setGrantData({ ...grantData, objectives: newObjectives });
                   }}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
                 />
               ))}
             </div>
           ) : (
             <ul className="space-y-3">
               {grantData.objectives.map((objective, index) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <FiCheckCircle className="text-green-500 mt-1" />
-                  <span className="text-gray-600">{objective}</span>
+                <li key={index} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-all duration-300">
+                  <FiCheckCircle className="text-[#FF6B00] mt-1" />
+                  <span className="text-gray-700">{objective}</span>
                 </li>
               ))}
             </ul>
@@ -510,43 +517,79 @@ const GrantDisplayPage = () => {
         </div>
 
         {/* Methodology */}
-        {renderEditableField(
-          "Methodology",
-          grantData.methodology,
-          (e) => setGrantData({ ...grantData, methodology: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiClipboard className="mr-2 text-[#FF6B00]" />
+            Methodology
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.methodology}
+              onChange={(e) => setGrantData({ ...grantData, methodology: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              rows="6"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{grantData.methodology}</p>
+          )}
+        </div>
 
         {/* Timeline */}
         {renderTimeline()}
 
         {/* Evaluation Plan */}
-        {renderEditableField(
-          "Evaluation Plan",
-          grantData.evaluationPlan,
-          (e) => setGrantData({ ...grantData, evaluationPlan: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiBarChart2 className="mr-2 text-[#FF6B00]" />
+            Evaluation Plan
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.evaluationPlan}
+              onChange={(e) => setGrantData({ ...grantData, evaluationPlan: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              rows="6"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{grantData.evaluationPlan}</p>
+          )}
+        </div>
 
         {/* Sustainability */}
-        {renderEditableField(
-          "Sustainability Plan",
-          grantData.sustainability,
-          (e) => setGrantData({ ...grantData, sustainability: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiTarget className="mr-2 text-[#FF6B00]" />
+            Sustainability Plan
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.sustainability}
+              onChange={(e) => setGrantData({ ...grantData, sustainability: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              rows="6"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{grantData.sustainability}</p>
+          )}
+        </div>
 
         {/* Team Qualifications */}
-        {renderEditableField(
-          "Team Qualifications",
-          grantData.teamQualifications,
-          (e) => setGrantData({ ...grantData, teamQualifications: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiUsers className="mr-2 text-[#FF6B00]" />
+            Team Qualifications
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.teamQualifications}
+              onChange={(e) => setGrantData({ ...grantData, teamQualifications: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              rows="6"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{grantData.teamQualifications}</p>
+          )}
+        </div>
 
         {/* Partnerships */}
         {renderEditableField(
@@ -558,24 +601,33 @@ const GrantDisplayPage = () => {
         )}
 
         {/* Impact Statement */}
-        {renderEditableField(
-          "Impact Statement",
-          grantData.impactStatement,
-          (e) => setGrantData({ ...grantData, impactStatement: e.target.value }),
-          "text",
-          true
-        )}
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiTarget className="mr-2 text-[#FF6B00]" />
+            Impact Statement
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={grantData.impactStatement}
+              onChange={(e) => setGrantData({ ...grantData, impactStatement: e.target.value })}
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              rows="6"
+            />
+          ) : (
+            <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{grantData.impactStatement}</p>
+          )}
+        </div>
 
         {/* Budget Breakdown */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <FiBarChart2 className="mr-2 text-green-600" />
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center bg-gradient-to-r from-[#FF6B00] to-[#FFA366] bg-clip-text text-transparent">
+            <FiBarChart2 className="mr-2 text-[#FF6B00]" />
             Budget Breakdown
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(grantData.budget).map(([category, amount]) => (
-              <div key={category} className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-gray-800 capitalize">{category}</h3>
+              <div key={category} className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-lg hover:shadow-md transition-all duration-300">
+                <h3 className="font-medium text-gray-900 capitalize">{category}</h3>
                 {isEditing ? (
                   <input
                     type="text"
@@ -586,10 +638,10 @@ const GrantDisplayPage = () => {
                         budget: { ...grantData.budget, [category]: e.target.value }
                       });
                     }}
-                    className="w-full p-2 border rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border rounded-lg mt-1 focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent bg-white shadow-sm hover:shadow-md transition-all duration-300"
                   />
                 ) : (
-                  <p className="text-gray-600 mt-1">{amount}</p>
+                  <p className="text-[#FF6B00] font-semibold mt-1">{amount}</p>
                 )}
               </div>
             ))}

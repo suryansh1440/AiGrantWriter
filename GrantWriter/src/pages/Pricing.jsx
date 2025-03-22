@@ -113,7 +113,7 @@ const Pricing = () => {
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute top-0 right-0 bg-primary text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-primary text-gray-700 px-4 py-1 text-sm font-semibold rounded-bl-lg">
                     Most Popular
                   </div>
                 )}
@@ -166,10 +166,10 @@ const Pricing = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-700 mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">
+            <p className="text-gray-700 max-w-2xl mx-auto">
               Find answers to common questions about our pricing and plans.
             </p>
           </motion.div>
@@ -212,7 +212,7 @@ const Pricing = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-primary text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-hover transition-colors duration-200"
+              className="bg-primary text-gray-700 px-8 py-4 border rounded-lg text-lg font-semibold hover:bg-primary-hover transition-colors duration-200"
             >
               Start Free Trial
             </motion.button>

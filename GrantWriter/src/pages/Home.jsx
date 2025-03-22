@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaGavel, FaArrowRight, FaCheck, FaRocket, FaLightbulb, FaChartLine, FaShieldAlt, FaClock, FaUsers } from 'react-icons/fa';
+import { FaGavel, FaArrowRight, FaCheck, FaRocket, FaLightbulb, FaChartLine, FaShieldAlt, FaClock, FaUsers, FaExclamationCircle } from 'react-icons/fa';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 
 const Home = () => {
   const navigate = useNavigate();
+  const formRef = useRef(null);
   const [formData, setFormData] = useState({
     organization: '',
     grantType: '',
@@ -116,6 +117,10 @@ Make the proposal compelling, professional, and aligned with best practices for 
     }
   };
 
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -144,6 +149,7 @@ Make the proposal compelling, professional, and aligned with best practices for 
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
+                onClick={scrollToForm}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-white text-[#FF6B00] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors duration-200 shadow-lg hover:shadow-xl"
@@ -151,6 +157,7 @@ Make the proposal compelling, professional, and aligned with best practices for 
                 Generate Grant Proposal
               </motion.button>
               <motion.button
+                onClick={() => navigate('/pricing')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-colors duration-200 shadow-lg hover:shadow-xl"
@@ -246,115 +253,191 @@ Make the proposal compelling, professional, and aligned with best practices for 
       </section>
 
       {/* Form Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section ref={formRef} className="py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-gray-100/25 bg-[size:20px_20px]" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-xl border border-gray-100"
+            className="max-w-3xl mx-auto"
           >
-            <h2 className="text-3xl font-bold text-secondary text-center mb-8">
-              Generate Your Grant Proposal
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Organization Name
-                </label>
-                <input
-                  type="text"
-                  name="organization"
-                  value={formData.organization}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Grant Type
-                </label>
-                <input
-                  type="text"
-                  name="grantType"
-                  value={formData.grantType}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Grant Amount
-                </label>
-                <input
-                  type="text"
-                  name="amount"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Deadline
-                </label>
-                <input
-                  type="date"
-                  name="deadline"
-                  value={formData.deadline}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Project Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="4"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200"
-                  required
-                />
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#FF6B00] text-white py-4 rounded-lg font-semibold hover:bg-[#FF8533] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin">⚡</span>
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Generate Proposal</span>
-                    <FaArrowRight />
-                  </>
-                )}
-              </motion.button>
-            </form>
-
-            {error && (
+            <div className="text-center mb-12">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-8 p-6 bg-red-50 rounded-lg border border-red-200"
+                initial={{ scale: 0.5, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-block p-3 bg-orange-100 rounded-2xl mb-4"
               >
-                <h3 className="text-xl font-semibold text-red-800 mb-4">
-                  {error}
-                </h3>
+                <FaGavel className="text-4xl text-[#FF6B00]" />
               </motion.div>
-            )}
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Generate Your Grant Proposal
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Fill in the details below and let our AI-powered system create a professional grant proposal tailored to your needs.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="p-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Organization Name
+                      </label>
+                      <input
+                        type="text"
+                        name="organization"
+                        value={formData.organization}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200 bg-gray-50"
+                        placeholder="Enter your organization name"
+                        required
+                      />
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Grant Type
+                      </label>
+                      <input
+                        type="text"
+                        name="grantType"
+                        value={formData.grantType}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200 bg-gray-50"
+                        placeholder="e.g., Research, Education, Community"
+                        required
+                      />
+                    </motion.div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Grant Amount
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-3 text-gray-500">$</span>
+                        <input
+                          type="text"
+                          name="amount"
+                          value={formData.amount}
+                          onChange={handleInputChange}
+                          className="w-full pl-8 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200 bg-gray-50"
+                          placeholder="Enter amount"
+                          required
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Deadline
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          name="deadline"
+                          value={formData.deadline}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200 bg-gray-50 cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:top-0 [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:h-full"
+                          required
+                        />
+                      </div>
+                      <p className="mt-1 text-sm text-gray-500">Click to select date</p>
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Project Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      rows="6"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition-all duration-200 bg-gray-50"
+                      placeholder="Provide a detailed description of your project..."
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white py-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                        <span>Generating Proposal...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Generate Proposal</span>
+                        <FaArrowRight className="ml-2" />
+                      </>
+                    )}
+                  </motion.button>
+                </form>
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8 p-6 bg-red-50 rounded-lg border border-red-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <FaExclamationCircle className="h-5 w-5 text-red-400" />
+                      </div>
+                      <h3 className="text-sm font-medium text-red-800">
+                        {error}
+                      </h3>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              <div className="px-8 py-6 bg-gray-50 border-t border-gray-100">
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <div className="flex items-center space-x-2">
+                    <FaShieldAlt className="text-[#FF6B00]" />
+                    <span>Your data is secure and encrypted</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <FaClock className="text-[#FF6B00]" />
+                    <span>Average generation time: 2 minutes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
