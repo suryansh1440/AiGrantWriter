@@ -34,22 +34,106 @@ const GrantDisplayPage = () => {
       personnel: "$20,000",
       equipment: "$15,000",
       materials: "$10,000",
-      other: "$5,000"
-    }
+      travel: "$5,000",
+      contractual: "$8,000",
+      other: "$2,000",
+      indirect: "$5,000"
+    },
+    risks: [
+      {
+        risk: "Risk 1",
+        mitigation: "Mitigation strategy for risk 1"
+      },
+      {
+        risk: "Risk 2",
+        mitigation: "Mitigation strategy for risk 2"
+      }
+    ],
+    innovationStatement: "Description of project innovation and field advancement...",
+    communityEngagement: "Details of community engagement and benefits...",
+    previousSuccess: "Relevant past successes and experience...",
+    dataManagement: "Data collection, storage, and analysis approach...",
+    compliance: "Regulatory compliance and ethical considerations..."
   });
 
   useEffect(() => {
-    // Load grant data from localStorage
     const savedGrant = localStorage.getItem('currentGrantProposal');
     if (savedGrant) {
       try {
         const parsedGrant = JSON.parse(savedGrant);
-        // Transform the AI-generated data to match our display format
+        
+        // Parse budget breakdown if it exists
+        let budgetBreakdown = {
+          personnel: "To be determined",
+          equipment: "To be determined",
+          materials: "To be determined",
+          travel: "To be determined",
+          contractual: "To be determined",
+          other: "To be determined",
+          indirect: "To be determined"
+        };
+
+        if (parsedGrant.budgetBreakdown) {
+          try {
+            const parsedBudget = typeof parsedGrant.budgetBreakdown === 'string' 
+              ? JSON.parse(parsedGrant.budgetBreakdown)
+              : parsedGrant.budgetBreakdown;
+            
+            budgetBreakdown = {
+              personnel: parsedBudget.personnel || "To be determined",
+              equipment: parsedBudget.equipment || "To be determined",
+              materials: parsedBudget.materials || "To be determined",
+              travel: parsedBudget.travel || "To be determined",
+              contractual: parsedBudget.contractual || "To be determined",
+              other: parsedBudget.other || "To be determined",
+              indirect: parsedBudget.indirect || "To be determined"
+            };
+          } catch (e) {
+            console.log('Budget parsing error:', e);
+          }
+        }
+
+        // Format amount with proper currency formatting
+        const formatAmount = (amount) => {
+          if (!amount) return "$0";
+          // Remove any existing currency symbols and commas
+          const numericAmount = parseFloat(amount.replace(/[^0-9.-]+/g, ""));
+          return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }).format(numericAmount);
+        };
+
+        // Format date if it exists
+        const formatDate = (dateString) => {
+          if (!dateString) return "Not specified";
+          try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          } catch (e) {
+            return dateString;
+          }
+        };
+
+        // Parse risks as objects if they exist
+        const parsedRisks = parsedGrant.risks?.map(risk => {
+          if (typeof risk === 'object' && risk !== null) {
+            return risk;
+          }
+          return { risk: risk, mitigation: '' };
+        }) || [];
+
         setGrantData({
           title: parsedGrant.projectTitle || "Grant Proposal",
           organization: parsedGrant.organizationName || "",
-          amount: parsedGrant.amount || "$0",
-          deadline: parsedGrant.deadline || "",
+          amount: formatAmount(parsedGrant.amount),
+          deadline: formatDate(parsedGrant.deadline),
           description: parsedGrant.projectDescription || "",
           executiveSummary: parsedGrant.executiveSummary || "",
           objectives: parsedGrant.objectives || [],
@@ -62,34 +146,28 @@ const GrantDisplayPage = () => {
           teamQualifications: parsedGrant.teamQualifications || "",
           partnerships: parsedGrant.partnerships || "",
           impactStatement: parsedGrant.impactStatement || "",
-          budget: {
-            personnel: "To be determined",
-            equipment: "To be determined",
-            materials: "To be determined",
-            other: "To be determined"
-          }
+          budget: budgetBreakdown,
+          risks: parsedRisks,
+          innovationStatement: parsedGrant.innovationStatement || "",
+          communityEngagement: parsedGrant.communityEngagement || "",
+          previousSuccess: parsedGrant.previousSuccess || "",
+          dataManagement: parsedGrant.dataManagement || "",
+          compliance: parsedGrant.compliance || ""
         });
       } catch (error) {
         console.error('Error parsing grant data:', error);
-        // If there's an error, redirect back to home
         navigate('/');
       }
     }
   }, [navigate]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
+  const handleEdit = () => setIsEditing(true);
   const handleSave = () => {
     setIsEditing(false);
-    // Save the updated grant data back to localStorage
     localStorage.setItem('currentGrantProposal', JSON.stringify(grantData));
   };
-
   const handleCancel = () => {
     setIsEditing(false);
-    // Reload the original data from localStorage
     const savedGrant = localStorage.getItem('currentGrantProposal');
     if (savedGrant) {
       const parsedGrant = JSON.parse(savedGrant);
@@ -114,15 +192,32 @@ const GrantDisplayPage = () => {
           personnel: "To be determined",
           equipment: "To be determined",
           materials: "To be determined",
-          other: "To be determined"
-        }
+          travel: "To be determined",
+          contractual: "To be determined",
+          other: "To be determined",
+          indirect: "To be determined"
+        },
+        risks: [
+          {
+            risk: "Risk 1",
+            mitigation: "Mitigation strategy for risk 1"
+          },
+          {
+            risk: "Risk 2",
+            mitigation: "Mitigation strategy for risk 2"
+          }
+        ],
+        innovationStatement: "",
+        communityEngagement: "",
+        previousSuccess: "",
+        dataManagement: "",
+        compliance: ""
       });
     }
   };
 
   const handleDownload = () => {
     try {
-      // Create and trigger the PDF generation
       <GrantPDF grantData={grantData} />;
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -196,6 +291,76 @@ const GrantDisplayPage = () => {
             <div key={index} className="border-l-4 border-blue-500 pl-4">
               <h3 className="font-semibold text-gray-800 mb-2">{phase}</h3>
               <p className="text-gray-600">{description}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderRisks = () => (
+    <div className="bg-white rounded-lg shadow-lg p-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+        <FiTarget className="mr-2 text-red-600" />
+        Risks and Mitigation Strategies
+      </h2>
+      {isEditing ? (
+        <div className="space-y-6">
+          {grantData.risks.map((riskItem, index) => (
+            <div key={index} className="space-y-2">
+              <input
+                type="text"
+                value={riskItem.risk || ''}
+                onChange={(e) => {
+                  const newRisks = [...grantData.risks];
+                  newRisks[index] = {
+                    ...newRisks[index],
+                    risk: e.target.value
+                  };
+                  setGrantData({ ...grantData, risks: newRisks });
+                }}
+                placeholder="Risk"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <textarea
+                value={riskItem.mitigation || ''}
+                onChange={(e) => {
+                  const newRisks = [...grantData.risks];
+                  newRisks[index] = {
+                    ...newRisks[index],
+                    mitigation: e.target.value
+                  };
+                  setGrantData({ ...grantData, risks: newRisks });
+                }}
+                placeholder="Mitigation Strategy"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows="2"
+              />
+            </div>
+          ))}
+          <button
+            onClick={() => {
+              setGrantData({
+                ...grantData,
+                risks: [...grantData.risks, { risk: '', mitigation: '' }]
+              });
+            }}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Add Risk
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {grantData.risks.map((riskItem, index) => (
+            <div key={index} className="border-l-4 border-red-500 pl-4">
+              <div className="flex items-start space-x-3">
+                <FiCheckCircle className="text-red-500 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">{riskItem.risk}</h3>
+                  <p className="text-gray-600 mt-1">{riskItem.mitigation}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -413,6 +578,54 @@ const GrantDisplayPage = () => {
             ))}
           </div>
         </div>
+
+        {/* Innovation Statement */}
+        {renderEditableField(
+          "Innovation Statement",
+          grantData.innovationStatement,
+          (e) => setGrantData({ ...grantData, innovationStatement: e.target.value }),
+          "text",
+          true
+        )}
+
+        {/* Community Engagement */}
+        {renderEditableField(
+          "Community Engagement",
+          grantData.communityEngagement,
+          (e) => setGrantData({ ...grantData, communityEngagement: e.target.value }),
+          "text",
+          true
+        )}
+
+        {/* Previous Success */}
+        {renderEditableField(
+          "Previous Success",
+          grantData.previousSuccess,
+          (e) => setGrantData({ ...grantData, previousSuccess: e.target.value }),
+          "text",
+          true
+        )}
+
+        {/* Data Management */}
+        {renderEditableField(
+          "Data Management",
+          grantData.dataManagement,
+          (e) => setGrantData({ ...grantData, dataManagement: e.target.value }),
+          "text",
+          true
+        )}
+
+        {/* Compliance */}
+        {renderEditableField(
+          "Compliance",
+          grantData.compliance,
+          (e) => setGrantData({ ...grantData, compliance: e.target.value }),
+          "text",
+          true
+        )}
+
+        {/* Risks */}
+        {renderRisks()}
       </div>
     </div>
   );

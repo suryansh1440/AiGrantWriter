@@ -34,31 +34,64 @@ const Home = () => {
       const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      const prompt = `Generate a detailed grant proposal based on the following information:
+      const prompt = `As an expert grant writer, generate a comprehensive and professional grant proposal based on the following information:
+
 Organization: ${formData.organization}
 Grant Type: ${formData.grantType}
-Amount: ${formData.amount}
+Amount Requested: ${formData.amount}
 Deadline: ${formData.deadline}
 Project Description: ${formData.description}
 
-Please provide a comprehensive grant proposal in JSON format with the following structure:
+Please provide a detailed grant proposal in JSON format with the following structure. Make all content specific, detailed, and professionally written:
+
 {
   "organizationName": "Organization name",
-  "projectTitle": "Project title",
-  "executiveSummary": "Brief summary of the project",
-  "projectDescription": "Detailed project description",
-  "objectives": ["List of specific objectives"],
-  "methodology": "Project methodology and approach",
-  "timeline": "Project timeline and milestones",
-  "budgetBreakdown": "Detailed budget breakdown",
-  "evaluationPlan": "Project evaluation and success metrics",
-  "sustainability": "Project sustainability plan",
-  "teamQualifications": "Team qualifications and experience",
-  "partnerships": "Key partnerships and collaborations",
-  "impactStatement": "Expected impact and outcomes"
+  "projectTitle": "Create a compelling title that reflects the project's goals",
+  "amount": "Format the requested amount with proper currency notation",
+  "deadline": "Format the deadline as a proper date",
+  "executiveSummary": "Write a compelling 2-3 paragraph executive summary that highlights the project's significance, goals, and expected impact",
+  "projectDescription": "Expand the provided description into a detailed 3-4 paragraph explanation of the project, its necessity, and its implementation",
+  "objectives": [
+    "List 4-6 specific, measurable, achievable, relevant, and time-bound (SMART) objectives"
+  ],
+  "methodology": "Provide a detailed 2-3 paragraph description of the project's implementation methodology, including specific steps, approaches, and tools",
+  "timeline": {
+    "Phase 1 (Months X-Y)": "Detailed description of phase activities and milestones",
+    "Phase 2 (Months X-Y)": "Detailed description of phase activities and milestones",
+    "Phase 3 (Months X-Y)": "Detailed description of phase activities and milestones"
+  },
+  "budgetBreakdown": {
+    "personnel": "Detailed cost with justification",
+    "equipment": "Detailed cost with justification",
+    "materials": "Detailed cost with justification",
+    "travel": "Detailed cost with justification",
+    "contractual": "Detailed cost with justification",
+    "other": "Detailed cost with justification",
+    "indirect": "Detailed cost with justification"
+  },
+  "evaluationPlan": "Describe specific metrics, methods, and tools that will be used to measure project success and impact",
+  "sustainability": "Explain how the project will be sustained beyond the grant period, including future funding sources and long-term impact",
+  "teamQualifications": "Provide detailed information about key team members, their qualifications, and their roles in the project",
+  "partnerships": "List and describe key partnerships and collaborations, including their roles and contributions",
+  "impactStatement": "Write a compelling statement about the project's expected outcomes and its broader impact on the community or field",
+  "risks": [
+    "List potential risks and mitigation strategies"
+  ],
+  "innovationStatement": "Describe what makes this project innovative and how it advances the field",
+  "communityEngagement": "Explain how the project will engage with and benefit the community",
+  "previousSuccess": "Highlight relevant past successes and experience that support this proposal",
+  "dataManagement": "Describe how project data will be collected, stored, and analyzed",
+  "compliance": "Address relevant regulatory compliance and ethical considerations"
 }
 
-Make the proposal compelling, professional, and aligned with best practices for grant writing.`;
+Ensure all content is:
+1. Specific and detailed
+2. Professional and well-written
+3. Aligned with grant writing best practices
+4. Realistic and achievable
+5. Compelling to potential funders
+
+Make the proposal compelling, professional, and aligned with best practices for grant writing. Use concrete examples, specific metrics, and clear language.`;
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -71,7 +104,7 @@ Make the proposal compelling, professional, and aligned with best practices for 
       // Store the grant proposal in localStorage for the display page
       localStorage.setItem('currentGrantProposal', JSON.stringify(grantProposal));
       
-      // Navigate to the grant display page with a temporary ID
+      // Navigate to the grant display page
       navigate('/grant-display/temp');
     } catch (err) {
       setError('Failed to generate grant proposal. Please try again.');
