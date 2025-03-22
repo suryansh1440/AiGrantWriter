@@ -1,66 +1,120 @@
 import React from 'react';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 const generatePDF = (grantData) => {
-  const doc = new jsPDF();
+  // Create a new window
+  const printWindow = window.open('', '_blank');
   
-  // Add title
-  doc.setFontSize(24);
-  doc.text(grantData.title, 20, 20);
-  doc.setFontSize(12);
-  
-  // Add organization
-  doc.text('Organization:', 20, 40);
-  doc.text(grantData.organization, 20, 50);
-  
-  // Add amount
-  doc.text('Amount:', 20, 60);
-  doc.text(grantData.amount, 20, 70);
-  
-  // Add deadline
-  doc.text('Deadline:', 20, 80);
-  doc.text(grantData.deadline, 20, 90);
-  
-  // Add description
-  doc.text('Description:', 20, 100);
-  const splitDescription = doc.splitTextToSize(grantData.description, 170);
-  doc.text(splitDescription, 20, 110);
-  
-  // Add objectives
-  doc.text('Objectives:', 20, 130);
-  grantData.objectives.forEach((objective, index) => {
-    const y = 140 + (index * 10);
-    doc.text(`• ${objective}`, 20, y);
-  });
-  
-  // Add budget breakdown
-  const budgetY = 140 + (grantData.objectives.length * 10) + 20;
-  doc.text('Budget Breakdown:', 20, budgetY);
-  
-  const budgetData = Object.entries(grantData.budget).map(([category, amount]) => [
-    category.charAt(0).toUpperCase() + category.slice(1),
-    amount
-  ]);
-  
-  doc.autoTable({
-    startY: budgetY + 10,
-    head: [['Category', 'Amount']],
-    body: budgetData,
-    theme: 'grid',
-    headStyles: { fillColor: [255, 107, 0] },
-    styles: { fontSize: 10 },
-    margin: { left: 20 }
-  });
-  
-  return doc;
+  // Create the HTML content
+  const content = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>${grantData.title}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          h1 {
+            color: #FF6B00;
+            border-bottom: 2px solid #FF6B00;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+          }
+          h2 {
+            color: #333;
+            margin-top: 20px;
+          }
+          .section {
+            margin-bottom: 20px;
+          }
+          .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+          }
+          .budget-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+          }
+          ul {
+            list-style-type: disc;
+            margin-left: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>${grantData.title}</h1>
+        
+        <div class="section">
+          <h2>Organization</h2>
+          <p>${grantData.organization}</p>
+        </div>
+
+        <div class="section">
+          <h2>Amount</h2>
+          <p>${grantData.amount}</p>
+        </div>
+
+        <div class="section">
+          <h2>Deadline</h2>
+          <p>${grantData.deadline}</p>
+        </div>
+
+        <div class="section">
+          <h2>Description</h2>
+          <p>${grantData.description}</p>
+        </div>
+
+        <div class="section">
+          <h2>Objectives</h2>
+          <ul>
+            ${grantData.objectives.map(objective => `<li>${objective}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>Budget Breakdown</h2>
+          <div class="grid">
+            ${Object.entries(grantData.budget)
+              .map(([category, amount]) => `
+                <div class="budget-item">
+                  <strong>${category.charAt(0).toUpperCase() + category.slice(1)}:</strong>
+                  <p>${amount}</p>
+                </div>
+              `).join('')}
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  // Write the content to the new window
+  printWindow.document.write(content);
+  printWindow.document.close();
+
+  // Wait for the content to load
+  printWindow.onload = () => {
+    // Print the document
+    printWindow.print();
+    // Close the window after printing
+    printWindow.onafterprint = () => {
+      printWindow.close();
+    };
+  };
 };
 
 const GrantPDF = ({ grantData }) => {
   if (!grantData) return null;
   
-  const doc = generatePDF(grantData);
-  return doc.output('blob');
+  // Generate and trigger the PDF
+  generatePDF(grantData);
+  return null;
 };
 
 export default GrantPDF;
