@@ -99,6 +99,8 @@ Make the proposal compelling, professional, and aligned with best practices for 
       
       // Clean the response text and parse JSON
       const cleanText = text.replace(/```json\n?|\n?```/g, '').trim();
+      console.log('Cleaned API Response:', cleanText);
+      
       const grantProposal = JSON.parse(cleanText);
 
       // Store the grant proposal in localStorage for the display page

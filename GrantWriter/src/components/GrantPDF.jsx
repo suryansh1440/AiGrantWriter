@@ -1,120 +1,211 @@
-import React from 'react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
-const generatePDF = (grantData) => {
-  // Create a new window
-  const printWindow = window.open('', '_blank');
-  
-  // Create the HTML content
-  const content = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>${grantData.title}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-          }
-          h1 {
-            color: #FF6B00;
-            border-bottom: 2px solid #FF6B00;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-          }
-          h2 {
-            color: #333;
-            margin-top: 20px;
-          }
-          .section {
-            margin-bottom: 20px;
-          }
-          .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 10px;
-          }
-          .budget-item {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 5px;
-          }
-          ul {
-            list-style-type: disc;
-            margin-left: 20px;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>${grantData.title}</h1>
-        
-        <div class="section">
-          <h2>Organization</h2>
-          <p>${grantData.organization}</p>
-        </div>
+export const generatePDF = (grantData) => {
+  try {
+    // Validate input data
+    if (!grantData) {
+      throw new Error('Grant data is required');
+    }
 
-        <div class="section">
-          <h2>Amount</h2>
-          <p>${grantData.amount}</p>
-        </div>
+    // Validate required fields
+    const requiredFields = ['title', 'organization', 'amount', 'deadline', 'executiveSummary', 'description'];
+    for (const field of requiredFields) {
+      if (!grantData[field]) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
 
-        <div class="section">
-          <h2>Deadline</h2>
-          <p>${grantData.deadline}</p>
-        </div>
+    // Create new PDF document
+    const doc = new jsPDF();
+    
+    // Set document properties
+    try {
+      doc.setProperties({
+        title: grantData.title,
+        subject: 'Grant Proposal',
+        author: grantData.organization,
+        keywords: 'grant, proposal',
+        creator: 'GrantWriter'
+      });
+    } catch (propError) {
+      console.error('Error setting PDF properties:', propError);
+      // Continue with PDF generation even if properties fail
+    }
 
-        <div class="section">
-          <h2>Description</h2>
-          <p>${grantData.description}</p>
-        </div>
-
-        <div class="section">
-          <h2>Objectives</h2>
-          <ul>
-            ${grantData.objectives.map(objective => `<li>${objective}</li>`).join('')}
-          </ul>
-        </div>
-
-        <div class="section">
-          <h2>Budget Breakdown</h2>
-          <div class="grid">
-            ${Object.entries(grantData.budget)
-              .map(([category, amount]) => `
-                <div class="budget-item">
-                  <strong>${category.charAt(0).toUpperCase() + category.slice(1)}:</strong>
-                  <p>${amount}</p>
-                </div>
-              `).join('')}
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
-
-  // Write the content to the new window
-  printWindow.document.write(content);
-  printWindow.document.close();
-
-  // Wait for the content to load
-  printWindow.onload = () => {
-    // Print the document
-    printWindow.print();
-    // Close the window after printing
-    printWindow.onafterprint = () => {
-      printWindow.close();
+    // Helper function to add text with word wrap
+    const addWrappedText = (text, x, y, maxWidth) => {
+      try {
+        if (!text) return 0;
+        const lines = doc.splitTextToSize(text.toString(), maxWidth);
+        doc.text(lines, x, y);
+        return lines.length;
+      } catch (textError) {
+        console.error('Error adding wrapped text:', textError);
+        return 0;
+      }
     };
-  };
-};
 
-const GrantPDF = ({ grantData }) => {
-  if (!grantData) return null;
-  
-  // Generate and trigger the PDF
-  generatePDF(grantData);
-  return null;
-};
+    // Add Header
+    doc.setFontSize(24);
+    doc.setTextColor(255, 107, 0); // #FF6B00
+    doc.text(grantData.title, 20, 20);
 
-export default GrantPDF;
+    // Add Organization Info
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Organization: ${grantData.organization}`, 20, 35);
+    doc.text(`Amount: ${grantData.amount}`, 20, 42);
+    doc.text(`Deadline: ${grantData.deadline}`, 20, 49);
+
+    let currentY = 60;
+
+    // Add Executive Summary
+    doc.setFontSize(16);
+    doc.text('Executive Summary', 20, currentY);
+    doc.setFontSize(12);
+    currentY += 8;
+    currentY += 5 * addWrappedText(grantData.executiveSummary, 20, currentY, 170);
+
+    // Add Project Description
+    currentY += 10;
+    doc.setFontSize(16);
+    doc.text('Project Description', 20, currentY);
+    doc.setFontSize(12);
+    currentY += 8;
+    currentY += 5 * addWrappedText(grantData.description, 20, currentY, 170);
+
+    // Add Objectives
+    if (Array.isArray(grantData.objectives) && grantData.objectives.length > 0) {
+      currentY += 10;
+      doc.setFontSize(16);
+      doc.text('Objectives', 20, currentY);
+      doc.setFontSize(12);
+      currentY += 8;
+      grantData.objectives.forEach(objective => {
+        if (objective) {
+          doc.text('• ' + objective, 25, currentY);
+          currentY += 7;
+        }
+      });
+    }
+
+    // Add Budget Breakdown
+    if (grantData.budget && typeof grantData.budget === 'object') {
+      currentY += 10;
+      doc.setFontSize(16);
+      doc.text('Budget Breakdown', 20, currentY);
+      currentY += 8;
+
+      try {
+        // Create budget table
+        const budgetData = Object.entries(grantData.budget)
+          .filter(([category, amount]) => category && amount)
+          .map(([category, amount]) => [
+            category.charAt(0).toUpperCase() + category.slice(1),
+            amount
+          ]);
+
+        autoTable(doc, {
+          startY: currentY,
+          head: [['Category', 'Amount']],
+          body: budgetData,
+          margin: { left: 20 },
+          theme: 'striped',
+          headStyles: { fillColor: [255, 107, 0] }
+        });
+
+        currentY = doc.lastAutoTable.finalY + 10;
+      } catch (tableError) {
+        console.error('Error creating budget table:', tableError);
+        currentY += 10; // Skip space if table fails
+      }
+    }
+
+    // Add Risks
+    if (currentY > 250) {
+      doc.addPage();
+      currentY = 20;
+    }
+
+    if (Array.isArray(grantData.risks) && grantData.risks.length > 0) {
+      doc.setFontSize(16);
+      doc.text('Risks and Mitigation Strategies', 20, currentY);
+      doc.setFontSize(12);
+      currentY += 8;
+
+      grantData.risks.forEach(riskItem => {
+        if (riskItem && (riskItem.risk || riskItem.mitigation)) {
+          // Set bold for risk
+          doc.setFont('helvetica', 'bold');
+          if (riskItem.risk) {
+            currentY += 5 * addWrappedText(riskItem.risk, 25, currentY, 165);
+          }
+          // Set normal for mitigation
+          doc.setFont('helvetica', 'normal');
+          currentY += 5;
+          if (riskItem.mitigation) {
+            currentY += 5 * addWrappedText(riskItem.mitigation, 25, currentY, 165);
+          }
+          currentY += 7;
+        }
+      });
+    }
+
+    // Add Timeline
+    if (currentY > 250) {
+      doc.addPage();
+      currentY = 20;
+    }
+
+    if (grantData.timeline && typeof grantData.timeline === 'object') {
+      doc.setFontSize(16);
+      doc.text('Project Timeline', 20, currentY);
+      doc.setFontSize(12);
+      currentY += 8;
+
+      Object.entries(grantData.timeline).forEach(([phase, description]) => {
+        if (phase && description) {
+          doc.setFont('helvetica', 'bold');
+          doc.text(phase, 25, currentY);
+          currentY += 7;
+          doc.setFont('helvetica', 'normal');
+          currentY += 5 * addWrappedText(description, 25, currentY, 165);
+          currentY += 7;
+        }
+      });
+    }
+
+    // Add Optional Sections with Validation
+    const optionalSections = [
+      { title: 'Methodology', content: grantData.methodology },
+      { title: 'Evaluation Plan', content: grantData.evaluationPlan },
+      { title: 'Sustainability Plan', content: grantData.sustainability },
+      { title: 'Team Qualifications', content: grantData.teamQualifications },
+      { title: 'Impact Statement', content: grantData.impactStatement }
+    ];
+
+    optionalSections.forEach(section => {
+      if (section.content) {
+        if (currentY > 250) {
+          doc.addPage();
+          currentY = 20;
+        }
+
+        doc.setFontSize(16);
+        doc.text(section.title, 20, currentY);
+        doc.setFontSize(12);
+        currentY += 8;
+        currentY += 5 * addWrappedText(section.content, 20, currentY, 170);
+      }
+    });
+
+    // Save the PDF
+    const safeTitle = grantData.title.replace(/[^a-zA-Z0-9]/g, '_');
+    doc.save(`${safeTitle}_Proposal.pdf`);
+
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw new Error(`Failed to generate PDF: ${error.message}`);
+  }
+};

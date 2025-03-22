@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiEdit2, FiDownload, FiSave, FiX, FiCalendar, FiDollarSign, FiUsers, FiTarget, FiClipboard, FiBarChart2, FiCheckCircle, FiClock } from 'react-icons/fi';
-import GrantPDF from '../components/GrantPDF';
+import { generatePDF } from '../components/GrantPDF';
 
 const GrantDisplayPage = () => {
   const { id } = useParams();
@@ -58,9 +58,12 @@ const GrantDisplayPage = () => {
 
   useEffect(() => {
     const savedGrant = localStorage.getItem('currentGrantProposal');
+    console.log('Raw data from localStorage:', savedGrant);
+    
     if (savedGrant) {
       try {
         const parsedGrant = JSON.parse(savedGrant);
+        console.log('Parsed grant data:', parsedGrant);
         
         // Parse budget breakdown if it exists
         let budgetBreakdown = {
@@ -79,6 +82,8 @@ const GrantDisplayPage = () => {
               ? JSON.parse(parsedGrant.budgetBreakdown)
               : parsedGrant.budgetBreakdown;
             
+            console.log('Parsed budget data:', parsedBudget);
+            
             budgetBreakdown = {
               personnel: parsedBudget.personnel || "To be determined",
               equipment: parsedBudget.equipment || "To be determined",
@@ -88,8 +93,10 @@ const GrantDisplayPage = () => {
               other: parsedBudget.other || "To be determined",
               indirect: parsedBudget.indirect || "To be determined"
             };
+            
+            console.log('Processed budget breakdown:', budgetBreakdown);
           } catch (e) {
-            console.log('Budget parsing error:', e);
+            console.error('Budget parsing error:', e);
           }
         }
 
@@ -98,12 +105,14 @@ const GrantDisplayPage = () => {
           if (!amount) return "$0";
           // Remove any existing currency symbols and commas
           const numericAmount = parseFloat(amount.replace(/[^0-9.-]+/g, ""));
-          return new Intl.NumberFormat('en-US', {
+          const formattedAmount = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
           }).format(numericAmount);
+          console.log('Amount formatting:', { original: amount, numeric: numericAmount, formatted: formattedAmount });
+          return formattedAmount;
         };
 
         // Format date if it exists
@@ -111,12 +120,15 @@ const GrantDisplayPage = () => {
           if (!dateString) return "Not specified";
           try {
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
+            const formattedDate = date.toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
             });
+            console.log('Date formatting:', { original: dateString, formatted: formattedDate });
+            return formattedDate;
           } catch (e) {
+            console.error('Date formatting error:', e);
             return dateString;
           }
         };
@@ -128,8 +140,10 @@ const GrantDisplayPage = () => {
           }
           return { risk: risk, mitigation: '' };
         }) || [];
+        
+        console.log('Processed risks:', parsedRisks);
 
-        setGrantData({
+        const processedData = {
           title: parsedGrant.projectTitle || "Grant Proposal",
           organization: parsedGrant.organizationName || "",
           amount: formatAmount(parsedGrant.amount),
@@ -153,9 +167,12 @@ const GrantDisplayPage = () => {
           previousSuccess: parsedGrant.previousSuccess || "",
           dataManagement: parsedGrant.dataManagement || "",
           compliance: parsedGrant.compliance || ""
-        });
+        };
+
+        console.log('Final processed data:', processedData);
+        setGrantData(processedData);
       } catch (error) {
-        console.error('Error parsing grant data:', error);
+        console.error('Error processing grant data:', error);
         navigate('/');
       }
     }
@@ -189,13 +206,13 @@ const GrantDisplayPage = () => {
         partnerships: parsedGrant.partnerships || "",
         impactStatement: parsedGrant.impactStatement || "",
         budget: {
-          personnel: "To be determined",
-          equipment: "To be determined",
-          materials: "To be determined",
-          travel: "To be determined",
-          contractual: "To be determined",
-          other: "To be determined",
-          indirect: "To be determined"
+          personnel: "$0",
+          equipment: "$0",
+          materials: "$0",
+          travel: "$0",
+          contractual: "$0",
+          other: "$0",
+          indirect: "$0"
         },
         risks: [
           {
@@ -218,7 +235,7 @@ const GrantDisplayPage = () => {
 
   const handleDownload = () => {
     try {
-      <GrantPDF grantData={grantData} />;
+      generatePDF(grantData);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
