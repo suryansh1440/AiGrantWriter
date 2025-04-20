@@ -64,7 +64,7 @@ const Header = () => {
 
           <div className="flex items-center space-x-4">
             <span className="text-lg font-medium text-[#FF6B00]">
-              ohm and 12309326
+              Om, Reg.- 12309326
             </span>
           </div>
         </div>
