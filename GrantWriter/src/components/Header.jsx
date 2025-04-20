@@ -51,36 +51,21 @@ const Header = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative text-base font-medium transition-all duration-200 hover:scale-105 ${
+                className={`text-lg font-medium transition-colors duration-200 ${
                   location.pathname === item.path
-                    ? 'text-[#FF6B00] font-semibold'
+                    ? 'text-[#FF6B00]'
                     : 'text-gray-600 hover:text-[#FF6B00]'
                 }`}
               >
                 {item.label}
-                {location.pathname === item.path && (
-                  <motion.div
-                    layoutId="underline"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#FF6B00]"
-                  />
-                )}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-base font-medium text-gray-600 hover:text-[#FF6B00] transition-all duration-200 hover:scale-105"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-[#FF6B00] text-white hover:bg-[#FF8533] px-6 py-2.5 rounded-lg text-base font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Get Started
-            </Link>
+            <span className="text-lg font-medium text-[#FF6B00]">
+              ohm and 12309326
+            </span>
           </div>
         </div>
       </div>
