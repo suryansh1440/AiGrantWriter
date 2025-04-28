@@ -68,19 +68,12 @@ const Header = () => {
             ))}
           </nav>
 
-          <div className="flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-base font-medium text-gray-600 hover:text-[#FF6B00] transition-all duration-200 hover:scale-105"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-[#FF6B00] text-white hover:bg-[#FF8533] px-6 py-2.5 rounded-lg text-base font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Get Started
-            </Link>
+          <div className="flex items-center space-x-4 flex-col font-bold">
+          <p className='text-gray-600 bg-gradient-to-r from-[#FF6B00] to-[#FFA366] text-transparent bg-clip-text' >Suryansh singh 12308916</p>
+          <p className='text-gray-600 bg-gradient-to-r from-[#FF6B00] to-[#FFA366] text-transparent bg-clip-text'>Misty Soni 12322907</p>
+          <p className='text-gray-600 bg-gradient-to-r from-[#FF6B00] to-[#FFA366] text-transparent bg-clip-text'>Mausam Kumari 12315203</p>
+            
+
           </div>
         </div>
       </div>
